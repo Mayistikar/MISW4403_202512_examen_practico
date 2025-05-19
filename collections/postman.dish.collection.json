@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "Dishes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "invalidDishId", "value": "00000000-0000-0000-0000-000000000000" },
+    { "key": "dishId", "value": "" }
+  ],
+  "item": [
+    {
+      "name":"Create Valid Dish",
+      "request":{
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\"nombre\":\"Plato Prueba\",\"descripcion\":\"Descripción plato\",\"precio\":10.5,\"categoria\":\"plato fuerte\"}"},
+        "url":{"raw":"{{baseUrl}}/dishes","host":["{{baseUrl}}"],"path":["dishes"]}
+      },
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"201 Created\",()=>pm.response.to.have.status(201));","let j=pm.response.json();pm.test(\"Has id\",()=>pm.expect(j).to.have.property('id'));pm.collectionVariables.set('dishId',j.id);"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Create Invalid Dish",
+      "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{}"},"url":{"raw":"{{baseUrl}}/dishes","host":["{{baseUrl}}"],"path":["dishes"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"400 Bad Request\",()=>pm.response.to.have.status(400));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get All Dishes",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/dishes","host":["{{baseUrl}}"],"path":["dishes"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));","pm.test(\"Array\",()=>pm.expect(pm.response.json()).to.be.an('array'));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get Dish By ID",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/dishes/{{dishId}}","host":["{{baseUrl}}"],"path":["dishes","{{dishId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));","let r=pm.response.json();pm.test(\"IDs match\",()=>pm.expect(r.id).to.eql(pm.collectionVariables.get('dishId')));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get Dish By Invalid ID",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/dishes/{{invalidDishId}}","host":["{{baseUrl}}"],"path":["dishes","{{invalidDishId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Update Dish",
+      "request":{
+        "method":"PUT",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\"nombre\":\"Plato Actualizado\",\"descripcion\":\"Descripción actualizada\",\"precio\":12.0,\"categoria\":\"entrada\"}"},
+        "url":{"raw":"{{baseUrl}}/dishes/{{dishId}}","host":["{{baseUrl}}"],"path":["dishes","{{dishId}}"]}
+      },
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Update Dish Invalid ID",
+      "request":{"method":"PUT","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{}"},"url":{"raw":"{{baseUrl}}/dishes/{{invalidDishId}}","host":["{{baseUrl}}"],"path":["dishes","{{invalidDishId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Delete Dish",
+      "request":{"method":"DELETE","url":{"raw":"{{baseUrl}}/dishes/{{dishId}}","host":["{{baseUrl}}"],"path":["dishes","{{dishId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"204 No Content\",()=>pm.response.to.have.status(204));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Delete Dish Invalid ID",
+      "request":{"method":"DELETE","url":{"raw":"{{baseUrl}}/dishes/{{invalidDishId}}","host":["{{baseUrl}}"],"path":["dishes","{{invalidDishId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    }
+  ]
+}

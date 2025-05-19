@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "Restaurants API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "invalidRestaurantId", "value": "00000000-0000-0000-0000-000000000000" },
+    { "key": "restaurantId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create Valid Restaurant",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type","value": "application/json" }],
+        "body": { "mode": "raw","raw": "{\"nombre\":\"Restaurante Prueba\",\"descripcion\":\"Descripción de prueba\",\"direccion\":\"Calle Falsa 123\",\"tipoCocina\":\"Internacional\",\"paginaWeb\":\"http://prueba.com\"}" },
+        "url": { "raw": "{{baseUrl}}/restaurants","host":["{{baseUrl}}"],"path":["restaurants"] }
+      },
+      "event": [{
+        "listen":"test",
+        "script": {
+          "exec":[
+            "pm.test(\"Status code is 201\",()=>pm.response.to.have.status(201));",
+            "let jsonData=pm.response.json();",
+            "pm.test(\"Has id\",()=>pm.expect(jsonData).to.have.property('id'));",
+            "pm.collectionVariables.set('restaurantId',jsonData.id);"
+          ],
+          "type":"text/javascript"
+        }
+      }]
+    },
+    {
+      "name":"Create Invalid Restaurant",
+      "request":{
+        "method":"POST",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{}"},
+        "url":{"raw":"{{baseUrl}}/restaurants","host":["{{baseUrl}}"],"path":["restaurants"]}
+      },
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"Status code is 400\",()=>pm.response.to.have.status(400));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get All Restaurants",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/restaurants","host":["{{baseUrl}}"],"path":["restaurants"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));","pm.test(\"Array\",()=>pm.expect(pm.response.json()).to.be.an('array'));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get Restaurant By ID",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/restaurants/{{restaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{restaurantId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));","let r=pm.response.json();pm.test(\"IDs match\",()=>pm.expect(r.id).to.eql(pm.collectionVariables.get('restaurantId')));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Get Restaurant By Invalid ID",
+      "request":{"method":"GET","url":{"raw":"{{baseUrl}}/restaurants/{{invalidRestaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{invalidRestaurantId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Update Restaurant",
+      "request":{
+        "method":"PUT",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{\"nombre\":\"Restaurante Actualizado\",\"descripcion\":\"Descripción actualizada\",\"direccion\":\"Av Actualizada 456\",\"tipoCocina\":\"Mexicana\",\"paginaWeb\":\"http://actualizado.com\"}"},
+        "url":{"raw":"{{baseUrl}}/restaurants/{{restaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{restaurantId}}"]}
+      },
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"200 OK\",()=>pm.response.to.have.status(200));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Update Restaurant Invalid ID",
+      "request":{
+        "method":"PUT",
+        "header":[{"key":"Content-Type","value":"application/json"}],
+        "body":{"mode":"raw","raw":"{}"},
+        "url":{"raw":"{{baseUrl}}/restaurants/{{invalidRestaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{invalidRestaurantId}}"]}
+      },
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Delete Restaurant",
+      "request":{"method":"DELETE","url":{"raw":"{{baseUrl}}/restaurants/{{restaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{restaurantId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"204 No Content\",()=>pm.response.to.have.status(204));"],"type":"text/javascript"}}]
+    },
+    {
+      "name":"Delete Restaurant Invalid ID",
+      "request":{"method":"DELETE","url":{"raw":"{{baseUrl}}/restaurants/{{invalidRestaurantId}}","host":["{{baseUrl}}"],"path":["restaurants","{{invalidRestaurantId}}"]}},
+      "event":[{"listen":"test","script":{"exec":["pm.test(\"404 Not Found\",()=>pm.response.to.have.status(404));"],"type":"text/javascript"}}]
+    }
+  ]
+}
