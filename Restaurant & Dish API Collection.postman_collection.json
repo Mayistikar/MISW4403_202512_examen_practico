@@ -1,0 +1,933 @@
+{
+	"info": {
+		"_postman_id": "563a7fb5-2a4d-4335-af92-560f3d3d77de",
+		"name": "Restaurant & Dish API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5831053"
+	},
+	"item": [
+		{
+			"name": "Create Valid Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+							"let jsonData = pm.response.json();",
+							"pm.test(\"Response has id\", function () { pm.expect(jsonData).to.have.property('id'); });",
+							"pm.collectionVariables.set('restaurantId', jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Restaurante Prueba\",\n    \"descripcion\": \"Descripción de prueba\",\n    \"direccion\": \"Calle Falsa 123\",\n    \"tipoCocina\": \"Internacional\",\n    \"paginaWeb\": \"http://prueba.com\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Invalid Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () { pm.response.to.have.status(412); });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Restaurants",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"pm.test(\"Response is array\", function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Restaurant By ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"let res = pm.response.json();",
+							"pm.test(\"id matches\", function () { pm.expect(res.id).to.eql(pm.collectionVariables.get('restaurantId')); });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Restaurant By Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{invalidRestaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{invalidRestaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"nombre\":\"Restaurante Actualizado\",\"descripcion\":\"Descripción actualizada\",\"direccion\":\"Av Actualizada 456\",\"tipoCocina\":\"Mexicana\",\"paginaWeb\":\"http://actualizado.com\"}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Restaurant Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{invalidRestaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{invalidRestaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () { pm.response.to.have.status(204); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Restaurant Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{invalidRestaurantId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{invalidRestaurantId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Valid Dish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+							"let jsonData = pm.response.json();",
+							"pm.test(\"Response has id\", function () { pm.expect(jsonData).to.have.property('id'); });",
+							"pm.collectionVariables.set('dishId', jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"nombre\":\"Plato Prueba\",\"descripcion\":\"Descripción plato\",\"precio\":10.5,\"categoria\":\"plato fuerte\"}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Invalid Dish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () { pm.response.to.have.status(412); });"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Dishes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"pm.test(\"Response is array\", function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Dish By ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"let res = pm.response.json();",
+							"pm.test(\"id matches\", function () { pm.expect(res.id).to.eql(pm.collectionVariables.get('dishId')); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Dish By Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Dish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"nombre\":\"Plato Actualizado\",\"descripcion\":\"Descripción actualizada\",\"precio\":12.0,\"categoria\":\"entrada\"}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Dish Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Dish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () { pm.response.to.have.status(204); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Dish Invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Associate Dish to Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Associate Nonexistent Dish to Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Dishes From Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"pm.test(\"Response is array\", function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Associated Dish From Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"let res = pm.response.json();",
+							"pm.test(\"id matches\", function () { pm.expect(res.id).to.eql(pm.collectionVariables.get('dishId')); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Non-associated Dish From Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Dishes of Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"dishIds\":[\"{{dishId}}\"]}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Dishes of Restaurant with Nonexistent Dish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"dishIds\":[\"{{invalidDishId}}\"]}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Associated Dish From Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () { pm.response.to.have.status(204); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{dishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{dishId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Non-associated Dish From Restaurant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/restaurants/{{restaurantId}}/dishes/{{invalidDishId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"restaurants",
+						"{{restaurantId}}",
+						"dishes",
+						"{{invalidDishId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "invalidRestaurantId",
+			"value": "00000000-0000-0000-0000-000000000000"
+		},
+		{
+			"key": "invalidDishId",
+			"value": "00000000-0000-0000-0000-000000000000"
+		},
+		{
+			"key": "restaurantId",
+			"value": ""
+		},
+		{
+			"key": "dishId",
+			"value": ""
+		}
+	]
+}
